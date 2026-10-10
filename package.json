@@ -1,0 +1,47 @@
+{
+  "name": "contramarea",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Contramarea — puzzle casual original: fusiona el arrecife y detén la marea.",
+  "author": "Jessica Panini Cuenca",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://contramarea.game",
+  "main": "electron/main.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node tools/serve.js",
+    "test": "node tools/test_engine.js",
+    "test:e2e": "node tools/smoke_test.js",
+    "calibrate": "node tools/calibrate.js",
+    "build:web": "node tools/build_web.js",
+    "cap:add:android": "cap add android",
+    "cap:add:ios": "cap add ios",
+    "cap:sync": "cap sync",
+    "cap:open:android": "cap open android",
+    "cap:open:ios": "cap open ios",
+    "android:aab": "cap sync android && cd android && ./gradlew bundleRelease",
+    "android:apk": "cap sync android && cd android && ./gradlew assembleRelease",
+    "desktop": "electron electron/main.js",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "^8.2.0",
+    "@capacitor/core": "^8.5.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
+    "electron": "^31.3.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.jessicapaninicuenca.contramarea",
+    "productName": "Contramarea",
+    "directories": { "output": "build" },
+    "files": ["electron/**/*", "src/**/*", "assets/**/*"],
+    "win": { "target": ["nsis"] },
+    "mac": { "target": ["dmg"], "category": "public.app-category.puzzle-games" },
+    "linux": { "target": ["AppImage"], "category": "Game" }
+  }
+}

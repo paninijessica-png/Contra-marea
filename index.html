@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Contramarea</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#071e26">
+<meta name="description" content="Contramarea — Fusiona el arrecife y detén la marea. Puzzle casual original.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Contramarea">
+<meta name="author" content="Jessica Panini Cuenca">
+<!-- El manifiesto PWA se añade dinámicamente solo si el juego se sirve por
+       http/https. En file:// (abrir la carpeta con doble clic) los navegadores
+       bloquean su lectura y generaría un aviso innecesario en consola. -->
+<link rel="icon" href="../assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- HUD superior -->
+  <header id="hud" class="hidden">
+    <button id="btn-pause" class="icon-btn" aria-label="Pausa">II</button>
+    <div class="hud-stats">
+      <div class="hud-item"><span class="hud-label" data-i18n="score">Puntos</span><span id="hud-score">0</span></div>
+      <div class="hud-item"><span class="hud-label" data-i18n="movesLeft">Movimientos</span><span id="hud-moves">0</span></div>
+      <div class="hud-item"><span class="hud-label" data-i18n="tide">Marea</span><span id="hud-tide">0/0</span></div>
+    </div>
+    <div id="hud-objective" class="hud-objective"></div>
+    <div class="hud-gems"><span class="gem-dot"></span><span id="hud-gems">0</span></div>
+  </header>
+
+  <!-- Tablero -->
+  <div id="board-wrap">
+    <canvas id="board" aria-label="Tablero de juego"></canvas>
+  </div>
+
+  <!-- Poderes y controles -->
+  <div id="controls" class="hidden">
+    <button class="power-btn" data-power="current" aria-label="Corriente"><span class="power-ico">≈</span><span class="power-cost">40</span></button>
+    <button class="power-btn" data-power="lowtide" aria-label="Bajamar"><span class="power-ico">☾</span><span class="power-cost">60</span></button>
+    <button class="power-btn" data-power="anchor" aria-label="Ancla"><span class="power-ico">⚓</span><span class="power-cost">30</span></button>
+    <div id="basket" class="basket" aria-label="Ancla"></div>
+  </div>
+
+  <!-- Pantallas -->
+  <div id="screens">
+
+    <!-- Menú principal -->
+    <section id="screen-menu" class="screen active">
+      <div class="logo">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 120 120" width="112" height="112">
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffc247"/><stop offset="1" stop-color="#ff7a59"/>
+              </linearGradient>
+              <linearGradient id="lg2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#7fe3c8"/><stop offset="1" stop-color="#2fa3c9"/>
+              </linearGradient>
+            </defs>
+            <path d="M14 74 Q34 58 60 66 T106 62 L106 92 Q60 104 14 92 Z" fill="url(#lg2)" opacity=".9"/>
+            <path d="M60 78 C56 60 44 52 46 36 C54 40 58 48 60 54 C62 44 70 34 78 30 C80 46 70 60 64 78 Z" fill="url(#lg1)"/>
+            <circle cx="40" cy="52" r="6" fill="#b768d8"/>
+            <circle cx="84" cy="50" r="5" fill="#6a7ee0"/>
+          </svg>
+        </div>
+        <h1 id="game-title">Contramarea</h1>
+        <p id="game-tagline" class="tagline">Fusiona el arrecife. Detén la marea.</p>
+      </div>
+      <div class="menu-actions">
+        <button id="btn-play" class="btn btn-primary" data-i18n="play">Jugar</button>
+        <button id="btn-endless" class="btn btn-ghost" data-i18n="endless">Mar abierto</button>
+        <button id="btn-install" class="btn btn-ghost hidden" data-i18n="install">Instalar app</button>
+        <div class="menu-row">
+          <button id="btn-levels" class="btn btn-small" data-i18n="levels">Niveles</button>
+          <button id="btn-shop" class="btn btn-small" data-i18n="shop">Tienda</button>
+          <button id="btn-settings" class="btn btn-small" data-i18n="settings">Ajustes</button>
+        </div>
+      </div>
+      <footer class="credits">
+        <span id="credits-owner">© 2025 Jessica Panini Cuenca</span>
+      </footer>
+    </section>
+
+    <!-- Niveles -->
+    <section id="screen-levels" class="screen">
+      <header class="screen-head">
+        <button class="icon-btn back" data-i18n="back">←</button>
+        <h2 data-i18n="levels">Niveles</h2>
+        <span class="stars-total"><span class="star">★</span><span id="stars-total">0</span>/72</span>
+      </header>
+      <div id="levels-grid" class="levels-grid"></div>
+    </section>
+
+    <!-- Tienda -->
+    <section id="screen-shop" class="screen">
+      <header class="screen-head">
+        <button class="icon-btn back" data-i18n="back">←</button>
+        <h2 data-i18n="shop">Tienda</h2>
+        <span class="hud-gems"><span class="gem-dot"></span><span id="shop-gems">0</span></span>
+      </header>
+      <div class="shop-section">
+        <h3 class="shop-h">Poderes</h3>
+        <div id="shop-powers" class="shop-list"></div>
+      </div>
+      <div class="shop-section">
+        <h3 class="shop-h">Gemas y packs</h3>
+        <div id="shop-iap" class="shop-list"></div>
+      </div>
+      <div class="shop-section">
+        <button id="btn-restore" class="btn btn-ghost" data-i18n="restore">Restaurar compras</button>
+      </div>
+    </section>
+
+    <!-- Ajustes -->
+    <section id="screen-settings" class="screen">
+      <header class="screen-head">
+        <button class="icon-btn back" data-i18n="back">←</button>
+        <h2 data-i18n="settings">Ajustes</h2>
+        <span></span>
+      </header>
+      <div class="settings-list">
+        <label class="setting-row">
+          <span data-i18n="sound">Sonido</span>
+          <input type="checkbox" id="opt-sound" class="switch">
+        </label>
+        <label class="setting-row">
+          <span data-i18n="language">Idioma</span>
+          <select id="opt-lang" class="select">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+        <button id="btn-privacy" class="btn btn-ghost" data-i18n="privacy">Política de privacidad</button>
+        <button id="btn-reset" class="btn btn-danger" data-i18n="resetProgress">Borrar progreso</button>
+        <p class="fineprint">Contramarea v<span id="ver">1.0.0</span> · <span id="pkg">com.jessicapaninicuenca.contramarea</span></p>
+      </div>
+    </section>
+
+    <!-- Resultado -->
+    <section id="screen-result" class="screen overlay">
+      <div class="card">
+        <h2 id="result-title">¡Nivel superado!</h2>
+        <div id="result-stars" class="result-stars"></div>
+        <p id="result-body" class="result-body"></p>
+        <div class="card-actions">
+          <button id="btn-result-menu" class="btn btn-ghost" data-i18n="menu">Menú</button>
+          <button id="btn-result-retry" class="btn btn-ghost" data-i18n="retry">Reintentar</button>
+          <button id="btn-result-next" class="btn btn-primary" data-i18n="next">Siguiente</button>
+        </div>
+        <button id="btn-result-revive" class="btn btn-reward hidden" data-i18n="watch">Ver anuncio</button>
+      </div>
+    </section>
+
+    <!-- Pausa -->
+    <section id="screen-pause" class="screen overlay">
+      <div class="card">
+        <h2 data-i18n="settings">Pausa</h2>
+        <div class="card-actions column">
+          <button id="btn-resume" class="btn btn-primary" data-i18n="continue">Continuar</button>
+          <button id="btn-pause-retry" class="btn btn-ghost" data-i18n="retry">Reintentar</button>
+          <button id="btn-pause-menu" class="btn btn-ghost" data-i18n="menu">Menú</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consentimiento (GDPR / UMP) -->
+    <section id="screen-consent" class="screen overlay">
+      <div class="card">
+        <h2 data-i18n="consentTitle">Tu privacidad</h2>
+        <p class="result-body" data-i18n="consentBody">Usamos datos para mostrarte anuncios.</p>
+        <div class="card-actions">
+          <button id="btn-consent-reject" class="btn btn-ghost" data-i18n="reject">Rechazar</button>
+          <button id="btn-consent-accept" class="btn btn-primary" data-i18n="accept">Aceptar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aviso de rotación -->
+    <section id="screen-rotate" class="screen overlay rotate-notice">
+      <div class="card">
+        <h2 data-i18n="rotate">Gira el dispositivo</h2>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="banner-slot" class="banner-slot"></div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/save.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/monetization.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/render.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "appId": "com.jessicapaninicuenca.contramarea",
+  "appName": "Contramarea",
+  "webDir": "src",
+  "loggingBehavior": "production",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "contentInset": "always",
+    "limitsNavigationsToAppBoundDomains": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "backgroundColor": "#071e26",
+      "showSpinner": false
+    }
+  }
+}

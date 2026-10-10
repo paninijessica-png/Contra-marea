@@ -1,0 +1,23 @@
+# Contramarea — archivos que NO deben subirse al repositorio.
+
+# --- Dependencias -----------------------------------------------------------
+node_modules/
+
+# --- Builds generados -------------------------------------------------------
+# (build/web se regenera con:  node tools/build_web.js)
+build/
+
+# --- Firma de Android: NUNCA subir estos archivos ---------------------------
+# Si el keystore se filtra, cualquiera puede firmar apps en tu nombre.
+# Si se pierde, no podrás volver a actualizar la app en Google Play.
+*.jks
+*.keystore
+keystore.properties
+
+# --- Sistema ----------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.log
+
+# --- Salidas de herramientas ------------------------------------------------
+.tool-results/
