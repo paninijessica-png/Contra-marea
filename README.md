@@ -156,6 +156,6 @@ node tools/calibrate.js      # recalibra la dificultad de los niveles
 
 ---
 
-© 2025 Jessica Panini Cuenca. Todos los derechos reservados.
+© 2025 Jessica Panini Cuenca.. Todos los derechos reservados.
 Contramarea es una obra original: nombre, arte, mecánicas y textos son propios y
 no derivan de ningún otro juego. Ver `docs/ORIGINALIDAD.md`.
